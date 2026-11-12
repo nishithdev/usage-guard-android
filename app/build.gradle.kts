@@ -16,11 +16,25 @@ android {
         versionName = "0.5"
     }
 
+    // Release signing comes from environment variables (set from GitHub secrets in CI),
+    // so no private key ever lives in this public repo. Without them, the build falls back
+    // to the local debug key, which is fine for trying the app on your own phone.
+    val storeFilePath = System.getenv("SIGNING_STORE_FILE")
+    signingConfigs {
+        if (storeFilePath != null && file(storeFilePath).exists()) {
+            create("release") {
+                storeFile = file(storeFilePath)
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            // v0.1: signed with the debug key so the APK installs directly.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
 
