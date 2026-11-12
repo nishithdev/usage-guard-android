@@ -98,21 +98,13 @@ fun SettingsScreen(refresh: Int) {
                 LabelBlock(
                     "Battery optimization",
                     if (batteryOk) "Off for Usage Guard, so the guard keeps running"
-                    else "On. Some phones may stop the guard in the background",
+                    else "On. Some phones may stop the guard in the background. " + UsageRepo.BATTERY_STEPS,
                     Modifier.weight(1f),
                 )
                 if (!batteryOk) {
-                    TextButton(onClick = {
-                        @Suppress("BatteryLife")
-                        runCatching {
-                            ctx.startActivity(
-                                Intent(
-                                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Uri.parse("package:${ctx.packageName}"),
-                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            )
-                        }
-                    }) { Text("Fix", color = C.Ink, fontWeight = FontWeight.Bold) }
+                    TextButton(onClick = { UsageRepo.openBatterySettings(ctx) }) {
+                        Text("Fix", color = C.Ink, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }

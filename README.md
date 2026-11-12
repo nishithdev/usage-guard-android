@@ -38,7 +38,7 @@ Usage Guard isn't on the Play Store yet, so you install it straight from GitHub.
    3. Go back to Usage Guard and grant the permission again
 
    *(The setup screen has an **Open App info** button that takes you straight there.)*
-5. **Optional but recommended:** allow notifications and turn off battery optimization when the setup screen offers it. Some phones (Samsung, Xiaomi, OnePlus) otherwise stop the guard in the background.
+5. **Optional but recommended:** allow notifications, and set Usage Guard's battery use to **Unrestricted** (the setup screen opens the right page). Some phones (Samsung, Xiaomi, OnePlus) otherwise stop the guard in the background.
 6. Go to the **Apps** tab and switch on the apps you want to limit. A **Social** group is already set up with any social apps you have installed.
 
 **Updating:** download the new `.apk` from Releases and install it over the old one. Your settings are kept.

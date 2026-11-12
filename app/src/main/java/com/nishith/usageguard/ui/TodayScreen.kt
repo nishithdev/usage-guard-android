@@ -140,25 +140,15 @@ private fun StoppedBanner(stoppedAt: Long) {
         Text(
             "It was last running around $time, so no limits were enforced after that. It's running again now." +
                 if (batteryOk) " If this keeps happening, check your phone's battery settings for Usage Guard."
-                else " To stop this, turn off battery optimization for Usage Guard.",
+                else " To stop this, let Usage Guard use the battery without restrictions. " + UsageRepo.BATTERY_STEPS,
             fontSize = 13.sp, color = C.Ink, lineHeight = 18.sp,
         )
         if (!batteryOk) {
             androidx.compose.material3.Button(
-                onClick = {
-                    @Suppress("BatteryLife")
-                    runCatching {
-                        ctx.startActivity(
-                            android.content.Intent(
-                                android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                android.net.Uri.parse("package:${ctx.packageName}"),
-                            ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                        )
-                    }
-                },
+                onClick = { UsageRepo.openBatterySettings(ctx) },
                 shape = RoundedCornerShape(12.dp),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = C.Ink, contentColor = Color.White),
-            ) { Text("Turn off battery optimization", fontWeight = FontWeight.SemiBold) }
+            ) { Text("Open battery settings", fontWeight = FontWeight.SemiBold) }
         }
     }
 }

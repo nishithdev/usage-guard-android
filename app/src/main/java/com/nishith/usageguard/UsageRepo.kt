@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
@@ -47,6 +48,21 @@ object UsageRepo {
     }
 
     fun canDrawOverlays(ctx: Context) = Settings.canDrawOverlays(ctx)
+
+    /** What to tap once the battery settings are open. */
+    const val BATTERY_STEPS =
+        "On the App info screen, tap App battery usage (or Battery) and choose Unrestricted."
+
+    /**
+     * Opens Usage Guard's own App info page, where the battery setting lives on Android 12+.
+     * We don't ask for the exemption directly: that needs a permission Google Play restricts.
+     */
+    fun openBatterySettings(ctx: Context) {
+        val details = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${ctx.packageName}"))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val list = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        runCatching { ctx.startActivity(details) }.onFailure { runCatching { ctx.startActivity(list) } }
+    }
 
     fun ignoresBatteryOptimizations(ctx: Context): Boolean {
         val pm = ctx.getSystemService(Context.POWER_SERVICE) as PowerManager

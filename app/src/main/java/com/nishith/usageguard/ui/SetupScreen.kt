@@ -121,15 +121,11 @@ fun SetupScreen(refresh: Int, usageOk: Boolean, overlayOk: Boolean, onStart: () 
         )
         StepCard(
             number = 4, done = batteryOk, active = false, optional = true,
-            title = "Ignore battery optimization",
-            body = "Stops phones like Samsung or Xiaomi from killing the guard to save battery.",
-            action = "Allow",
-            onAction = {
-                @Suppress("BatteryLife")
-                if (!open(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, pkgUri))) {
-                    open(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                }
-            },
+            title = "Unrestricted battery use",
+            body = "Stops phones like Samsung or Xiaomi from killing the guard to save battery. " +
+                UsageRepo.BATTERY_STEPS,
+            action = "Open battery settings",
+            onAction = { UsageRepo.openBatterySettings(ctx) },
         )
 
         if (!usageOk || !overlayOk) {
