@@ -95,10 +95,11 @@ Every push to `main` is built by the **Build** workflow. To publish a release th
 
 1. Bump `versionCode` and `versionName` in `app/build.gradle.kts`.
 2. Optionally add `release-notes/vX.Y.md`.
-3. Tag and push. The **Release** workflow builds the APK and attaches it to a GitHub Release:
-   ```bash
-   git tag v0.6 && git push origin v0.6
-   ```
+3. Publish, either way:
+   - On GitHub: **Actions → Release → Run workflow**, then type the version (e.g. `v0.6`)
+   - Or from a terminal: `git tag v0.6 && git push origin v0.6`
+
+   The **Release** workflow builds the APK, creates the tag and GitHub Release, and attaches the APK.
 
 To sign every release with the same key, so testers can update without uninstalling, add these repository secrets under *Settings → Secrets and variables → Actions*: `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`. Without them, releases use a throwaway key.
 

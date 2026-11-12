@@ -14,6 +14,12 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # Or publish from GitHub: Actions → Release → Run workflow, and type the version (e.g. v0.6).
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to publish, e.g. v0.6"
+        required: true
 
 permissions:
   contents: write
@@ -51,8 +57,11 @@ jobs:
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Name the APK and write release notes
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${INPUT_VERSION:-$GITHUB_REF_NAME}"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
           APK="UsageGuard-${TAG}.apk"
           cp app/build/outputs/apk/release/app-release.apk "$APK"
           sha256sum "$APK" > "$APK.sha256"
@@ -70,7 +79,9 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
-          name: Usage Guard ${{ github.ref_name }}
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          name: Usage Guard ${{ env.TAG }}
           body_path: notes.md
           files: |
             ${{ env.APK }}
