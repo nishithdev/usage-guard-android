@@ -63,6 +63,8 @@ Usage Guard isn't on the Play Store yet, so you install it straight from GitHub.
 
 Usage Guard has **no internet permission**. Usage data, limits and videos stay on your device. Gallery videos are chosen with Android's photo picker, so the app only sees the videos you pick.
 
+Full details: [Privacy Policy](PRIVACY.md).
+
 ---
 
 ## Found a bug or have an idea?
