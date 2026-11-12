@@ -77,7 +77,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Tracks foreground app time and shows a cooldown lock when a self-set limit is reached" />
+                android:value="Digital wellbeing: checks which app is open, only to lock apps the user chose to limit once their self-set time limit is reached. Runs only while the user has the guard switched on." />
         </service>
 
         <receiver
