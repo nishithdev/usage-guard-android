@@ -49,12 +49,14 @@ jobs:
             echo "::warning::No SIGNING_KEYSTORE_BASE64 secret. Signing with a throwaway debug key; testers will need to uninstall before the next update."
           fi
 
-      - name: Build APK
+      # The APK is for people installing from GitHub; the App Bundle (.aab) is what
+      # Google Play accepts. Both are signed with the same key from secrets.
+      - name: Build APK and App Bundle
         env:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease bundleRelease --no-daemon
 
       - name: Name the APK and write release notes
         env:
@@ -66,6 +68,8 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk "$APK"
           sha256sum "$APK" > "$APK.sha256"
           echo "APK=$APK" >> "$GITHUB_ENV"
+          cp app/build/outputs/bundle/release/app-release.aab "UsageGuard-${TAG}.aab"
+          echo "AAB=UsageGuard-${TAG}.aab" >> "$GITHUB_ENV"
           if [ -f "release-notes/${TAG}.md" ]; then
             cp "release-notes/${TAG}.md" notes.md
           else
@@ -76,6 +80,22 @@ jobs:
           ---
           **Install:** download the `.apk` below on your Android phone (Android 8 or newer), open it, and allow installing from your browser if asked. Full steps, including the one-time "Allow restricted settings" unlock, are in the [README](https://github.com/${{ github.repository }}#install-on-your-phone).
           EOF
+
+      # The App Bundle goes on the workflow run (Actions → this run → Artifacts), not on the
+      # public release: it's only for uploading to Play Console.
+      - name: Keep the App Bundle for Play Console
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-store-bundle-${{ env.TAG }}
+          path: ${{ env.AAB }}
+
+      - name: Check the bundle can go to Play
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::This App Bundle is signed with a debug key. Google Play will reject it. Add the signing secrets (issue #10) before uploading to Play."
+          fi
 
       - uses: softprops/action-gh-release@v2
         with:
