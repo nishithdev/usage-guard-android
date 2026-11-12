@@ -109,8 +109,11 @@ fun SettingsScreen(refresh: Int) {
             }
         }
 
+        val version = remember {
+            runCatching { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName }.getOrNull() ?: ""
+        }
         Text(
-            "Usage Guard v0.5 · all data stays on this phone",
+            "Usage Guard v$version · all data stays on this phone",
             fontSize = 12.sp, color = C.Muted,
             modifier = Modifier.padding(top = 4.dp),
         )

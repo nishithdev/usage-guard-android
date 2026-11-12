@@ -9,11 +9,11 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.nishith.usageguard"
+        applicationId = "com.nishithdevstudios.usageguard"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.5.1"
+        versionCode = 7
+        versionName = "0.5.2"
     }
 
     // Release signing comes from environment variables (set from GitHub secrets in CI),
