@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.window.OnBackInvokedDispatcher
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
@@ -38,8 +40,20 @@ class LockShield(private val ctx: Context, private val onGoHome: () -> Unit) {
 
     fun show(info: LockInfo) {
         if (root == null) {
-            root = build()
-            runCatching { wm.addView(root, params()) }.onFailure { root = null; return }
+            val view = build()
+            runCatching { wm.addView(view, params()) }.onFailure { return }
+            root = view
+            // Android 13+ (and by default when targeting Android 16) delivers Back through
+            // OnBackInvokedDispatcher instead of key events, so listen there as well.
+            if (Build.VERSION.SDK_INT >= 33) {
+                view.post {
+                    runCatching {
+                        view.findOnBackInvokedDispatcher()?.registerOnBackInvokedCallback(
+                            OnBackInvokedDispatcher.PRIORITY_OVERLAY,
+                        ) { onGoHome() }
+                    }
+                }
+            }
         }
         title.text = "${info.title} is cooling down"
         val opens = DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(info.until))

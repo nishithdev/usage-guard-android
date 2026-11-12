@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,8 +71,9 @@ fun SetupScreen(refresh: Int, usageOk: Boolean, overlayOk: Boolean, onStart: () 
         Modifier
             .fillMaxSize()
             .background(C.Ground)
+            .systemBarsPadding() // Android 15+ draws edge-to-edge; keep clear of the status and nav bars
             .verticalScroll(rememberScrollState())
-            .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 32.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Box(

@@ -6,14 +6,14 @@ plugins {
 
 android {
     namespace = "com.nishith.usageguard"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nishith.usageguard"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 5
-        versionName = "0.5"
+        targetSdk = 36
+        versionCode = 6
+        versionName = "0.5.1"
     }
 
     // Release signing comes from environment variables (set from GitHub secrets in CI),
