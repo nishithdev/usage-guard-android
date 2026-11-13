@@ -28,14 +28,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Set up signing key
         env:
@@ -84,7 +84,7 @@ jobs:
       # The App Bundle goes on the workflow run (Actions → this run → Artifacts), not on the
       # public release: it's only for uploading to Play Console.
       - name: Keep the App Bundle for Play Console
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: play-store-bundle-${{ env.TAG }}
           path: ${{ env.AAB }}
@@ -97,7 +97,7 @@ jobs:
             echo "::warning::This App Bundle is signed with a debug key. Google Play will reject it. Add the signing secrets (issue #10) before uploading to Play."
           fi
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG }}
           target_commitish: ${{ github.sha }}
